@@ -36,6 +36,7 @@ Getting the Initiator Group Name
 IG_DBSERVER_LINUX
 
 or
+
 >>> my_vmax.get_ign('168', '10234567890ABCDE')
 
 
