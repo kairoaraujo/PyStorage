@@ -1,26 +1,46 @@
+=======================================
 Python Storage Disk Toolkit (PyStorage)
 =======================================
+
+:PyStorage:   Python Storage Disk Toolkit
+:Copyright:   Copyright (c) 2016  Kairo Araujo <kairo@kairo.eti.br>
+:License:     BSD
+:Development: https://github.com/kairoaraujo/PyStorage
+
+Overview
+========
 
 This is a collection of storage disk commands.
 
 At the moment the actual version is supporting some commands of EMC VMAX
 Storage.
 
-Installing:
------------
+Requirements
+============
 
-- Using PIP:
+* Python 2.7
 
-# pip install PyStorage
 
-- Offline install
+Install
+=======
+
+* Using PIP:
+
+.. code-block:: bash
+
+    $ pip install PyStorage
+
+* Offline install
+
 Download the package on https://pypi.python.org/pypi/PyStorage/
-# tar xvzf PyStorage-X.Y.tar.gz
-# cd PyStorage-X.Y
-# python setup.py install
+
+.. code-block:: bash
+    $ tar xvzf PyStorage-X.Y.tar.gz
+    $ cd PyStorage-X.Y
+    # python setup.py install
 
 Using:
-------
+======
 
 >>> import pystorage
 >>> symcli_path = '/opt/emc/SYMCLI/bin'
@@ -39,20 +59,10 @@ or
 
 >>> my_vmax.get_ign('168', '10234567890ABCDE')
 
-
-
-
-:PyStorage:   Python Storage Disk Toolkit
-:Copyright:   Copyright (c) 2016  Kairo Araujo <kairo@kairo.eti.br
-:License:     BSD
-:Development: https://github.com/kairoaraujo/PyStorage
-
 IMPORTANT:
+==========
+
 EMC, SYMCLI and VMAX are trademarks of EMC in the United States, other
 countries, or both.
 
 IBM and DS are trademarks of EMC in the United States, other countries, or both.
-
-
-
-
