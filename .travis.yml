@@ -9,9 +9,6 @@ python:
 install:
   # Self-install for setup.py-driven deps
   - pip install -e .
-script:
-  # Main tests, with coverage!
-  - inv test --coverage
 
 notifications:
   email: false
