@@ -38,7 +38,7 @@ Download the package on https://pypi.python.org/pypi/PyStorage/
 
     $ tar xvzf PyStorage-X.Y.tar.gz
     $ cd PyStorage-X.Y
-    # python setup.py install
+    $ python setup.py install
 
 Using:
 ======
