@@ -9,7 +9,6 @@ python:
 install:
   # Self-install for setup.py-driven deps
   - pip install -e .
-  - pip install -r dev-requirements.txt
 script:
   # Main tests, with coverage!
   - inv test --coverage
