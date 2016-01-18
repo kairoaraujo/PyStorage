@@ -35,6 +35,7 @@ Install
 Download the package on https://pypi.python.org/pypi/PyStorage/
 
 .. code-block:: bash
+
     $ tar xvzf PyStorage-X.Y.tar.gz
     $ cd PyStorage-X.Y
     # python setup.py install
