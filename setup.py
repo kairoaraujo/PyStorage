@@ -11,7 +11,7 @@ with open(join(dirname(__file__), 'pystorage/VERSION'), 'rb') as f:
 setup(
     name="PyStorage",
     version=version,
-    description="Python Storage Toolkit",
+    description="Python Storage Disk Toolkit",
     long_description=open('README.rst').read(),
     author="Kairo Araujo",
     author_email="kairo@kairo.eti.br",
