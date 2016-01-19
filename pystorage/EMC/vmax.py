@@ -139,7 +139,7 @@ class VMAX(object):
             return sgn_out
 
     def create_dev(self, sid='', count=0, lun_size=0, member_size=0,
-                   lun_type='', pool='', sgn=''):
+                   lun_type='', pool='', sgn='', action='prepare'):
         """
         Create device(s) for Storage Group Name.
 
@@ -150,6 +150,8 @@ class VMAX(object):
         :param lun_type: meta or regular
         :param pool: the pool for allocation (use lspools() to check)
         :param sgn: Storage Group Name
+        :param action: strings 'prepare'(default) or 'commit'
+
         :return: returns the return code and output of allocation
         """
 
@@ -159,38 +161,43 @@ class VMAX(object):
         lun_size *= 1092
         member_size *= 1092
 
+        # args validation
         self.validate_args()
+        if (action != 'prepare') or (action != 'commit'):
+            return [1, 'The parameter action need to be prepare or commit.']
 
         if lun_type == 'meta':
             create_dev_cmd = '{0}/symconfigure -sid {1} -cmd \"' \
-                             'create dev count= {2}, size= {3} CYL, ' \
-                             'emulation=FBA , config=TDEV , ' \
-                             'meta_member_size= {4} CYL, ' \
-                             'meta_config=striped, binding to pool= {5}, ' \
-                             'sg={6} ;\" commit -v -nop' \
+                             'create dev count={2}, size={3} CYL, ' \
+                             'emulation=FBA, config=TDEV, ' \
+                             'meta_member_size={4} CYL, ' \
+                             'meta_config=striped, binding to pool={5}, ' \
+                             'sg={6} ;\" {7} -v -nop' \
                 .format(self.symcli_path,
                         sid,
                         count,
                         lun_size,
                         member_size,
                         pool,
-                        sgn)
+                        sgn,
+                        action)
 
         elif lun_type == 'regular':
 
             create_dev_cmd = '{0}/symconfigure -sid {1} -cmd \"' \
-                             'create dev count= {2}, size= {3} CYL, ' \
+                             'create dev count={2}, size={3} CYL, ' \
                              'emulation=FBA , config=TDEV , ' \
-                             'binding to pool= {4}, sg={5} ;\"commit -v -nop' \
+                             'binding to pool={4}, sg={5} ;\" {6} -v -nop' \
                 .format(self.symcli_path,
                         sid,
                         count,
                         lun_size,
                         pool,
-                        sgn)
+                        sgn,
+                        action)
 
         else:
-            return 'argument dev_type is not valid. use: meta or regular'
+            return [1, 'argument dev_type is not valid. use: meta or regular']
 
         create_dev_out = runsub.cmd(create_dev_cmd, True)
 
