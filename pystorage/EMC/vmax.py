@@ -178,7 +178,7 @@ class VMAX(object):
 
         elif lun_type == 'regular':
 
-            create_dev_cmd = 'i{0}/symconfigure -sid {1} -cmd \"' \
+            create_dev_cmd = '{0}/symconfigure -sid {1} -cmd \"' \
                              'create dev count= {2}, size= {3} CYL, ' \
                              'emulation=FBA , config=TDEV , ' \
                              'binding to pool= {4}, sg={5} ;\"commit -v -nop' \
