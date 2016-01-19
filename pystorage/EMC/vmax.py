@@ -162,7 +162,7 @@ class VMAX(object):
         self.validate_args()
 
         if lun_type == 'meta':
-            create_dev_cmd = 'echo {0}/symconfigure -sid {1} -cmd \" ' \
+            create_dev_cmd = '{0}/symconfigure -sid {1} -cmd \"' \
                              'create dev count= {2}, size= {3} CYL, ' \
                              'emulation=FBA , config=TDEV , ' \
                              'meta_member_size= {4} CYL, ' \
@@ -178,7 +178,7 @@ class VMAX(object):
 
         elif lun_type == 'regular':
 
-            create_dev_cmd = 'echo {0}/symconfigure -sid {1} -cmd \" ' \
+            create_dev_cmd = 'i{0}/symconfigure -sid {1} -cmd \"' \
                              'create dev count= {2}, size= {3} CYL, ' \
                              'emulation=FBA , config=TDEV , ' \
                              'binding to pool= {4}, sg={5} ;\"commit -v -nop' \
@@ -192,6 +192,6 @@ class VMAX(object):
         else:
             return 'argument dev_type is not valid. use: meta or regular'
 
-        create_dev_out = runsub.cmd(create_dev_cmd)
+        create_dev_out = runsub.cmd(create_dev_cmd, True)
 
         return create_dev_out
