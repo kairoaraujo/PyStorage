@@ -110,7 +110,7 @@ class VMAX(object):
             mvn_out_splited = mvn_out[1].split('Masking View Names')[1]
             mvn_out_splited = mvn_out_splited.split()[1].lstrip()
 
-            return mvn_cmd[0], mvn_out_splited
+            return mvn_out[0], mvn_out_splited
 
         else:
             return mvn_out
