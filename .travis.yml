@@ -9,6 +9,8 @@ python:
 install:
   # Self-install for setup.py-driven deps
   - pip install -e .
+script: nosetests
+
 
 notifications:
   email: false
