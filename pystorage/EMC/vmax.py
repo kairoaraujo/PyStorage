@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # 
-import subprocess
+from pystorage import runsub
 
 
 class VMAX(object):
@@ -39,24 +39,17 @@ class VMAX(object):
         """
 
         symcfg_list_cmd = '{0}/symcfg list'.format(self.symcli_path)
+        symcfg_list_out = runsub.cmd(symcfg_list_cmd)
 
-        c_symcfg_list = subprocess.Popen(symcfg_list_cmd.split(),
-                                         stdout=subprocess.PIPE,
-                                         stderr=subprocess.PIPE)
-
-        symcfg_list_out, symcfg_list_err = c_symcfg_list.communicate()
-
-        if c_symcfg_list.returncode == 0:
-            return c_symcfg_list.returncode, symcfg_list_out
-        else:
-            return c_symcfg_list.returncode, symcfg_list_err
+        return symcfg_list_out
 
     def lspools(self,  sid='', args=''):
         """
         List all available pools on VMAX.
-         :param: args is optional. You can use parameters such as -thin
-         :param: sid Identification of VMAX (SID)
-         :return: the return code and pools without legend.
+        :param sid: Identification of VMAX (SID)
+        :param args: is optional. You can use parameters such as -thin
+
+        :return: the return code and pools without legend.
         """
 
         self.validate_args()
@@ -64,25 +57,21 @@ class VMAX(object):
         lspools_cmd = '{0}/symcfg -sid {1} list -pool {2}'.format(
             self.symcli_path, sid, args)
 
-        c_lspools = subprocess.Popen(lspools_cmd.split(),
-                                     stdout=subprocess.PIPE,
-                                     stderr=subprocess.PIPE)
+        lspools_out = runsub.cmd(lspools_cmd)
 
-        lspool_out, lspool_err = c_lspools.communicate()
 
-        if c_lspools.returncode == 0:
-            lspool_out = lspool_out.split('Legend:')
-            lspool_out = lspool_out[0]  # first part only
-            return c_lspools.returncode, lspool_out
+        if lspools_out[0] == 0:
+            return lspools_out[0], lspools_out[1].split('Legend:')[0]
         else:
-            return c_lspools.returncode, lspool_err
+            return lspools_out
 
     def get_ign(self, sid='', wwn=''):
         """
         Get the Initiator Group Name by the WWN.
 
-        :param: sid Identification of VMAX (SID)
-        :param: wwn of client
+        :param sid: Identification of VMAX (SID)
+        :param wwn: of client
+
         :return: the return code and Initiator Group Name of the client server.
         """
 
@@ -91,27 +80,22 @@ class VMAX(object):
         ign_cmd = "{0}/symaccess -sid {1} -type init list -wwn {2}".format(
             self.symcli_path, sid, wwn)
 
-        c_ign = subprocess.Popen(ign_cmd.split(), stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
+        ign_out = runsub.cmd(ign_cmd)
 
-        ign_out, ign_err = c_ign.communicate()
-
-        if c_ign.returncode == 0:
+        if ign_out[0] == 0:
             # spliting in lines
-            ign_out = ign_out.split('\n')
+            ign_out_splited = ign_out[1].split('\n')
             # cleaning the empty elements (filter) and removing whitespaces
-            # (lstrip)
-            ign_out = filter(None, ign_out)[-1].strip()
-            return c_ign.returncode, ign_out
-
+            ign_out_splited = filter(None, ign_out_splited)[-1].split()[0]
+            return ign_out[0], ign_out_splited
         else:
-            return c_ign.returncode, ign_err
+            return ign_out
 
     def get_mvn(self, sid='', ign=''):
         """
         Get the Mask View Names by Initiator Group Name.
 
-        :param: sid Identification of VMAX (SID)
+        :param sid: Identification of VMAX (SID)
         :param ign: Initiator Group Name. check init_ign(ign, sid)
         :return: the return code and Mask View Name
         """
@@ -120,24 +104,22 @@ class VMAX(object):
         mvn_cmd = "{0}/symaccess -sid {1} -type init show {2}".format(
             self.symcli_path, sid, ign)
 
-        c_mvn = subprocess.Popen(mvn_cmd.split(), stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
-        mvn_out, mvn_err = c_mvn.communicate()
+        mvn_out = runsub.cmd(mvn_cmd)
 
-        if c_mvn.returncode == 0:
-            mvn_out = mvn_out.split('Masking View Names')[1]
-            mvn_out = mvn_out.split()[1].lstrip()
+        if mvn_out[0] == 0:
+            mvn_out_splited = mvn_out[1].split('Masking View Names')[1]
+            mvn_out_splited = mvn_out_splited.split()[1].lstrip()
 
-            return c_mvn.returncode, mvn_out
+            return mvn_cmd[0], mvn_out_splited
 
         else:
-            return c_mvn.returncode, mvn_err
+            return mvn_out
 
     def get_sgn(self, sid='', mvn=''):
         """
          Get the Storage Group Name by the Mask View Name
 
-         :param: sid Identification of VMAX (SID)
+         :param sid: Identification of VMAX (SID)
          :param mvn: Mask View Name check init_mvn(mvn, sid)
          :return: the return code and Storage Group Name
          """
@@ -146,25 +128,22 @@ class VMAX(object):
         sgn_cmd = '{0}/symaccess -sid {1} show view {2}'.format(
             self.symcli_path, sid, mvn)
 
-        c_sgn = subprocess.Popen(sgn_cmd.split(), stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
+        sgn_out = runsub.cmd(sgn_cmd)
 
-        sgn_out, sgn_err = c_sgn.communicate()
+        if sgn_out[0] == 0:
+            sgn_out_splited = sgn_out[1].split('Storage Group Name ')[1]
+            sgn_out_splited = sgn_out_splited.split()[1]
 
-        if c_sgn.returncode == 0:
-            sgn_out = sgn_out.split('Storage Group Name ')[1]
-            sgn_out = sgn_out.split()[1]
-
-            return c_sgn.returncode, sgn_out
+            return sgn_out[0], sgn_out_splited
         else:
-            return c_sgn.returncode, sgn_err
+            return sgn_out
 
     def create_dev(self, sid='', count=0, lun_size=0, member_size=0,
                    lun_type='', pool='', sgn=''):
         """
         Create device(s) for Storage Group Name.
 
-        :param: sid Identification of VMAX (SID)
+        :param sid: Identification of VMAX (SID)
         :param count: number of devices
         :param lun_size: the size of LUN (GB) Ex: 100
         :param member_size: Member size (only for lun_type=meta)
@@ -213,13 +192,6 @@ class VMAX(object):
         else:
             return 'argument dev_type is not valid. use: meta or regular'
 
-        c_create_dev = subprocess.Popen(create_dev_cmd.split(),
-                                        stdout=subprocess.PIPE,
-                                        stderr=subprocess.PIPE)
+        create_dev_out = runsub.cmd(create_dev_cmd)
 
-        create_dev_out, create_dev_err = c_create_dev.communicate()
-
-        if c_create_dev.returncode == 0:
-            return c_create_dev.returncode, create_dev_out
-        else:
-            return c_create_dev.returncode, create_dev_err
+        return create_dev_out
