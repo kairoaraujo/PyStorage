@@ -3,6 +3,7 @@
 #
 # 
 from pystorage import runsub
+from pystorage import calc
 
 
 class VMAX(object):
@@ -65,14 +66,33 @@ class VMAX(object):
         else:
             return lspools_out
 
+    def ign(self, sid='', wwn=''):
+        """
+        Get Initial Group Name (IGN) full output by the WWN.
+
+        :param sid: Identification of VMAX (SID).
+        :param wwn: wwn client.
+        :return: array with return code and full output of IGN.
+        """
+
+        self.validate_args()
+
+        ign_cmd = "{0}/symaccess -sid {1} -type init list -wwn {2}".format(
+                self.symcli_path, sid, wwn)
+
+        ign_out = runsub.cmd(ign_cmd)
+
+        return ign_out
+
+
     def get_ign(self, sid='', wwn=''):
         """
         Get the Initiator Group Name by the WWN.
 
-        :param sid: Identification of VMAX (SID)
-        :param wwn: of client
+        :param sid: Identification of VMAX (SID).
+        :param wwn: wwn client.
 
-        :return: the return code and Initiator Group Name of the client server.
+        :return: array with return code and only Initiator Group Name.
         """
 
         self.validate_args()
@@ -91,13 +111,31 @@ class VMAX(object):
         else:
             return ign_out
 
+    def mvn(self, sid='', ign=''):
+        """
+        Get the Mask View Names with full informations using the Initiator
+        Group Name.
+
+        :param sid: Identification of VMAX (SID).
+        :param ign: Initiator Group Name. check get_ign() or ign().
+        :return: the return code and full Mask View Name informations.
+        """
+
+        mvn_cmd = "{0}/symaccess -sid {1} -type init show {2}".format(
+            self.symcli_path, sid, ign)
+
+        mvn_out = runsub.cmd(mvn_cmd)
+
+        return mvn_out
+
+
     def get_mvn(self, sid='', ign=''):
         """
         Get the Mask View Names by Initiator Group Name.
 
-        :param sid: Identification of VMAX (SID)
-        :param ign: Initiator Group Name. check init_ign(ign, sid)
-        :return: the return code and Mask View Name
+        :param sid: Identification of VMAX (SID).
+        :param ign: Initiator Group Name. check ign() or get_ign().
+        :return: the return code and only Mask View Name.
         """
         self.validate_args()
 
@@ -107,21 +145,50 @@ class VMAX(object):
         mvn_out = runsub.cmd(mvn_cmd)
 
         if mvn_out[0] == 0:
-            mvn_out_splited = mvn_out[1].split('Masking View Names')[1]
-            mvn_out_splited = mvn_out_splited.split()[1].lstrip()
+            mvn_splited = mvn_out[1].split(
+                    'Masking View Names'
+            )[1].split(
+                    '{'
+            )[1].split(
+                    '}')[0]
 
-            return mvn_out[0], mvn_out_splited
+            mvn_array = [line for line in mvn_splited.split('\n') if
+                         line.strip() != '']
+
+            mvn_out = [mvn_out[0]]
+            for line in mvn_array:
+                mvn_out.append(line.strip().split()[0])
+
+            return mvn_out
 
         else:
             return mvn_out
 
+    def sgn(self, sid='', mvn=''):
+        """
+         Get the Storage Group Name by the Mask View Name.
+
+         :param sid: Identification of VMAX (SID).
+         :param mvn: Mask View Name check mvn() or get_mvn().
+         :return: the return code and full output Storage Group Name.
+         """
+
+        self.validate_args()
+
+        sgn_cmd = '{0}/symaccess -sid {1} show view {2}'.format(
+            self.symcli_path, sid, mvn)
+
+        sgn_out = runsub.cmd(sgn_cmd)
+
+        return sgn_out
+
     def get_sgn(self, sid='', mvn=''):
         """
-         Get the Storage Group Name by the Mask View Name
+         Get the Storage Group Name by the Mask View Name.
 
-         :param sid: Identification of VMAX (SID)
-         :param mvn: Mask View Name check init_mvn(mvn, sid)
-         :return: the return code and Storage Group Name
+         :param sid: Identification of VMAX (SID).
+         :param mvn: Mask View Name check sgn() or get_sgn().
+         :return: the return code and only Storage Group Name.
          """
         self.validate_args()
 
@@ -158,8 +225,8 @@ class VMAX(object):
         # convert size GB to CYL
         lun_size = int(lun_size)
         member_size = int(member_size)
-        lun_size *= 1092
-        member_size *= 1092
+        lun_size *= calc.gb2cyl(lun_size)
+        member_size *= calc.gb2cyl(member_size)
 
         # args validation
         self.validate_args()
