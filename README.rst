@@ -56,7 +56,9 @@ It's works with Storage Disk EMC VMAX.
 >>> symcli_path = '/opt/emc/SYMCLI/bin'
 >>> my_vmax = pystorage.EMC.VMAX(symcli_path)
 
-**list()**
+**EMC.list()**
+
+List all Storages
 
 returns array [return code, output]
 
@@ -77,7 +79,9 @@ Sample:
     000000000108 Remote      VMAX20K   5876      120320         0      4640
 
 
-**lspools(SID)**
+**EMC.lspools(SID)**
+
+List all Pools
 
 returns array [return code, output]
 
@@ -100,14 +104,39 @@ Tracks                           2380882128 1835867964  545014164   22    0
 
 Getting the Initiator Group Name
 
-**get_ign(SID, WWN)**
+**EMC.get_ign(SID, WWN)**
+
+Get Initial Group Name.
 
 returns array [return code, output]
 
 >>> print my_vmax.get_ign('108', '10:23:45:67:89:0A:BC:DE')[1]
-IG_DBSERVER_LINUX
+IG_LNXDBSRV001
 
+**EMC.get_mvn(SID, 'INITIAL GROUP NAME')**
 
+Get Mask View Name by the Initial Group Name.
+
+returns array [return code, output]
+
+>>> print my_vmax.get_mvn('108', 'IG_DBSERVER_LINUX')[1]
+MV_DSM_LNXDBSRV001
+
+**EMC.get_sgn(SID, 'MASK VIEW NAME')**
+
+Get the Storage Group Name by the Mask View Name
+
+returns array [return code, output]
+
+>>> print my_vmax.get_sgn(168, 'MV_DSM_TVT_TIVIT0070')[1]
+SG_LNXDBSRV001
+
+**EMC.create_dev(SID, COUNT, 'LUN SIZE', 'MEMBER SIZE', 'REGULAR or META',**
+**'POOL', 'STORAGE GROUP NAME' 'PREPARE or COMMIT')**
+
+Create and add LUN to Storage Group Name.
+
+return array [return code, output]
 
 IMPORTANT:
 ==========
