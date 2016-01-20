@@ -163,7 +163,7 @@ class VMAX(object):
 
         # args validation
         self.validate_args()
-        if (action != 'prepare') or (action != 'commit'):
+        if (action != 'prepare') and (action != 'commit'):
             return [1, 'The parameter action need to be prepare or commit.']
 
         if lun_type == 'meta':
