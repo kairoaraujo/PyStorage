@@ -64,10 +64,8 @@ Sample:
 
 >>> print my_vmax.list()[1]
                                 S Y M M E T R I X
-
                                        Mcode    Cache      Num Phys  Num Symm
     SymmID       Attachment  Model     Version  Size (MB)  Devices   Devices
-
     000000000100 Local       VMAX-1    5876      114688         5     12361
     000000000101 Local       VMAX-1    5876      300800        10     16190
     000000000102 Local       VMAX20K   5876      421120        10     13957
@@ -84,9 +82,7 @@ Sample:
 returns array [return code, output]
 
 >>> print my_vmax.lspools(108)[1]
-
 Symmetrix ID: 000000000108
-
                        S Y M M E T R I X   P O O L S
 ---------------------------------------------------------------------------
 Pool         Flags  Dev              Usable       Free       Used Full Comp
@@ -99,7 +95,6 @@ DEFAULT_POOL S-A-D- Unknown               0          0          0    0    0
 MYPOOLSAS01  TEFDEI RAID-5(7+1)    84095232   69400896   14694336   17    0
 MYPOOLSAS02  TFFDEI RAID-5(7+1)  1215449040  791717292  423731748   34    0
 MYPOOLSATA01 TSFDEI RAID-6(6+2)  1081337856  974749776  106588080    9    0
-
 Total                            ---------- ---------- ---------- ---- ----
 Tracks                           2380882128 1835867964  545014164   22    0
 
