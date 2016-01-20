@@ -21,7 +21,7 @@ Storage.
 Requirements
 ============
 
-* Python 2.7
+* Python >=2.7
 
 
 Install
@@ -56,13 +56,13 @@ It's works with Storage Disk EMC VMAX.
 >>> symcli_path = '/opt/emc/SYMCLI/bin'
 >>> my_vmax = pystorage.EMC.VMAX(symcli_path)
 
+
+
 **EMC.list()**
 
-List all Storages
+List all Storages Disk available.
 
 returns array [return code, output]
-
-Sample:
 
 >>> print my_vmax.list()[1]
                                 S Y M M E T R I X
@@ -79,9 +79,10 @@ Sample:
     000000000108 Remote      VMAX20K   5876      120320         0      4640
 
 
+
 **EMC.lspools(SID)**
 
-List all Pools
+List all Pools from specific storage SID.
 
 returns array [return code, output]
 
@@ -102,16 +103,59 @@ MYPOOLSATA01 TSFDEI RAID-6(6+2)  1081337856  974749776  106588080    9    0
 Total                            ---------- ---------- ---------- ---- ----
 Tracks                           2380882128 1835867964  545014164   22    0
 
-Getting the Initiator Group Name
+
+
+**EMC.ign(SID, WWN)**
+
+Get Initial Group Name full output by the WWN.
+
+returns array [return code, output]
+
+>>> print my_vmax.ign('108', '10:23:45:67:89:0A:BC:DE')[1]
+Symmetrix ID          : 000000000108
+Initiator Group Name
+--------------------
+IG_LNXDBSRV001
+
+
 
 **EMC.get_ign(SID, WWN)**
 
-Get Initial Group Name.
+Get Initial Group Name, only the Initial Group Name.
 
 returns array [return code, output]
 
 >>> print my_vmax.get_ign('108', '10:23:45:67:89:0A:BC:DE')[1]
 IG_LNXDBSRV001
+
+
+
+**EMC.mvn(SID, 'INITIAL GROUP NAME')**
+
+Get the Mask View Names with full informations using the Initiator Group Name.
+
+returns array [return code, output]
+
+>>> print my_vmax.get_mvn('108', 'IG_DBSERVER_LINUX')[1]
+Symmetrix ID          : 000000000108
+Initiator Group Name    : IG_LNXDBSRV001
+Last update time        : 12:46:36 PM on Tue Dec 09,2014
+Group last update time  : 12:46:36 PM on Tue Dec 09,2014
+   Host Initiators
+     {
+       WWN  : 10234567890abcde
+              [alias: 10234567890abcde/10234567890abcde]
+     }
+   Masking View Names
+     {
+       MV_LNXDBSRV001
+     }
+   Parent Initiator Groups
+     {
+       None
+     }
+
+
 
 **EMC.get_mvn(SID, 'INITIAL GROUP NAME')**
 
@@ -119,8 +163,50 @@ Get Mask View Name by the Initial Group Name.
 
 returns array [return code, output]
 
->>> print my_vmax.get_mvn('108', 'IG_DBSERVER_LINUX')[1]
-MV_DSM_LNXDBSRV001
+>>> print my_vmax.get_mvn('108', 'IG_DBSERVER_LINUX')[1:]
+MV_LNXDBSRV001
+
+
+
+**EMC.sgn(SID, 'MASK VIEW NAME')**
+
+Get the full Storage Group Name information by the Mask View Name.
+
+returns array [return code, output]
+
+>>> print my_vmax.sgn('168', 'MV_LNXDBSRV001')[1]
+Symmetrix ID                : 000000000108
+Masking View Name           : MV_LNXDBSRV001
+Last update time            : 05:32:53 PM on Thu Nov 12,2015
+View last update time       : 05:32:53 PM on Thu Nov 12,2015
+Initiator Group Name        : IG_LNXDBSRV001
+   Host Initiators
+     {
+       WWN  : 10234567890abcde
+              [alias: 10234567890abcde/10234567890abcde]
+     }
+Port Group Name             : PG_LNXDBSRV001_012A
+   Director Identification
+     {
+        Director
+      Ident  Port   WWN Port Name / iSCSI Target Name
+      ------ ---- -------------------------------------------------------
+      01-2A   000 500001234567890a
+     }
+Storage Group Name          : SG_LNXDBSRV001
+   Number of Storage Groups : 0
+   Storage Group Names      : None
+Sym                                        Host
+Dev     Dir:Port  Physical Device Name     Lun   Attr  Cap(MB)
+------  --------  -----------------------  ----  ----  -------
+00055   09F:000   Not Visible                 1              3
+00056   09F:000   Not Visible                 2              3
+00057   09F:000   Not Visible                 3              3
+00058   09F:000   Not Visible                 4              3
+                                                       -------
+Total Capacity                                              12
+
+
 
 **EMC.get_sgn(SID, 'MASK VIEW NAME')**
 
@@ -128,15 +214,47 @@ Get the Storage Group Name by the Mask View Name
 
 returns array [return code, output]
 
->>> print my_vmax.get_sgn(168, 'MV_DSM_TVT_TIVIT0070')[1]
+>>> print my_vmax.get_sgn('108', 'MV_LNXDBSRV001')[1]
 SG_LNXDBSRV001
 
-**EMC.create_dev(SID, COUNT, 'LUN SIZE', 'MEMBER SIZE', 'REGULAR or META',**
-**'POOL', 'STORAGE GROUP NAME' 'PREPARE or COMMIT')**
+
+
+**EMC.create_dev('168', 2, '50', '0', 'regular','MYPOOLSAS02',**
+**'SG_LNXDBSRV001' 'prepare')**
 
 Create and add LUN to Storage Group Name.
 
 return array [return code, output]
+
+>>
+    Establishing a configuration change session...............Established.
+    Processing symmetrix 000592600168
+    {
+      create dev count=2, size=54600 cyl, emulation=FBA, config=TDEV,
+        mvs_ssid=0, binding to pool MYPOOLSAS02, sg=SG_LNXDBSRV001;
+    }
+
+    Performing Access checks..................................Allowed.
+    Checking Device Reservations..............................Allowed.
+    Initiating COMMIT of configuration changes................Started.
+    Committing configuration changes..........................Queued.
+    COMMIT requesting required resources......................Obtained.
+    Step 002 of 018 steps.....................................Executing.
+    Step 011 of 018 steps.....................................Executing.
+    Step 016 of 019 steps.....................................Executing.
+    Step 016 of 019 steps.....................................Executing.
+    Local:  COMMIT............................................Done.
+    Adding devices to Storage Group...........................
+      New symdevs: 00D28:00D29 [TDEVs]
+    Terminating the configuration change session..............Done.
+
+Contributing:
+=============
+
+* Make a fork from GitHub ( https://github.com/kairoaraujo/PyStorage ) and send
+your improvements.
+
+* Create a new issue https://github.com/kairoaraujo/PyStorage/issues
 
 IMPORTANT:
 ==========
