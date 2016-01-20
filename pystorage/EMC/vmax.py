@@ -223,10 +223,8 @@ class VMAX(object):
         """
 
         # convert size GB to CYL
-        lun_size = int(lun_size)
-        member_size = int(member_size)
-        lun_size *= calc.gb2cyl(lun_size)
-        member_size *= calc.gb2cyl(member_size)
+        lun_size = calc.gb2cyl(int(lun_size))
+        member_size = calc.gb2cyl(int(member_size))
 
         # args validation
         self.validate_args()
