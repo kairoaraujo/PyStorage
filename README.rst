@@ -219,21 +219,21 @@ SG_LNXDBSRV001
 
 
 
-**EMC.create_dev('168', 2, '50', '0', 'regular','MYPOOLSAS02',**
-**'SG_LNXDBSRV001' 'prepare')**
+**EMC.create_dev(SID, COUNT, 'LUN SIZE', 'MEMBER SIZE', 'REGULAR or META',**
+**'POOL', 'STORAGE GROUP NAME' 'PREPARE or COMMIT')**
 
 Create and add LUN to Storage Group Name.
 
 return array [return code, output]
 
->>
+>>> my_vmax.create_dev('168', 2, '50', '0', 'regular','MYPOOLSAS02',
+'SG_LNXDBSRV001' 'prepare')
     Establishing a configuration change session...............Established.
-    Processing symmetrix 000592600168
+    Processing symmetrix 000000000108
     {
       create dev count=2, size=54600 cyl, emulation=FBA, config=TDEV,
         mvs_ssid=0, binding to pool MYPOOLSAS02, sg=SG_LNXDBSRV001;
     }
-
     Performing Access checks..................................Allowed.
     Checking Device Reservations..............................Allowed.
     Initiating COMMIT of configuration changes................Started.
@@ -251,10 +251,10 @@ return array [return code, output]
 Contributing:
 =============
 
-* Make a fork from GitHub ( https://github.com/kairoaraujo/PyStorage ) and send
+Make a fork from GitHub ( https://github.com/kairoaraujo/PyStorage ) and send
 your improvements.
 
-* Create a new issue https://github.com/kairoaraujo/PyStorage/issues
+Create a new issue https://github.com/kairoaraujo/PyStorage/issues
 
 IMPORTANT:
 ==========
