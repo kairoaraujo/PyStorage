@@ -2,5 +2,4 @@
 # -*- coding: utf-8 -*-
 #
 #
-from .EMC import VMAX
-from .IBM import DS8K
+from ds8k import DS8K

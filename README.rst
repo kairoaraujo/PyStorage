@@ -51,10 +51,19 @@ Download the package on https://pypi.python.org/pypi/PyStorage/
 Using
 =====
 
+* EMC.VMAX_
+
+* IBM.DS8K_
+
+.. _EMC.VMAX:
+
 EMC.VMAX
 --------
 
-It's works with Storage Disk EMC VMAX.
+Class EMC.VMAX() works with EMC VMAX Storage 1 and 2.
+
+Is necessary a SYMCLI installed and working well with your environment.
+For more information consult the EMC documentation.
 
 * Importing and initializing
 
@@ -253,8 +262,135 @@ return array [return code, output]
       New symdevs: 00D28:00D29 [TDEVs]
     Terminating the configuration change session..............Done.
 
+.. _IBM.DS8K:
+
+IBM.DSK8K
+---------
+
+Class IBM.DS8K() works with IBM DS8000 System Storage family.
+
+Is necessary a DSCLI installed and configured using profile files by
+storage.
+
+The profile files is usual stored on /opt/ibm/dscli/profile/
+
+The usual name is dscli.profile_[storage name]
+
+For more informations check:
+http://www-01.ibm.com/support/knowledgecenter/#!/STUVMB/com.ibm.storage.ssic.help.doc/f2c_cliprofile_1yecd2.html
+
+* Importing and initializing
+
+>>> import pystorage
+>>> dscli_path = '/opt/ibm/dscli'
+>>> dscli_profile_path = '/opt/ibm/dscli/profile/'
+>>> my_ds8k = pystorage.IBM.DS8K(dscli_path, dscli_profile_path+'dscli.profile_wxyz')
+
+* IBM.lsextpool()
+
+List all available pools, full output.
+
+return [return code, output]
+
+>>> print my_ds8k.lsextpool()[1]
+Date/Time: January 21, 2016 10:34:07 AM BRST IBM DSCLI Version: 7.7.5.61 DS: IBM.2107-82BCN51
+Name ID stgtype rankgrp status availstor (2^30B) %allocated available reserved numvols
+======================================================================================
+P0   P0 fb            0  below             14285         96     14285        0    2948
+P1   P1 fb            1  below             11737         96     11737        0    2878
+P2   P2 fb            0  below             11995         66     11995        0     341
+P3   P3 fb            1  below             12123         65     12123        0     422
+
+
+* IBM.lshostconnect('WWPN')
+
+Get the list of hosts. If used with WWPN (optional) returns informations from
+specified WWPN host.
+
+>>> print my_ds8k.lshostconnect('10234567890abcde')[1]
+Date/Time: January 21, 2016 10:36:55 AM BRST IBM DSCLI Version: 7.7.5.61 DS: IBM.2107-82BWXYZ
+Name                 ID   WWPN             HostType  Profile            portgrp volgrpID ESSIOport
+==================================================================================================
+LNXDBSRV001_TESTS    03DB 10234567890ABCDE LinuxRHEL Intel - Linux RHEL       0 V334     all
+
+
+
+
+* IBM.get_hostname('WWPN')
+
+Get the hostname from host by the WWPN.
+
+>>> print my_ds8k.get_hostname('10234567890abcde')[1]
+LNXDBSRV001_TESTS
+
+
+
+* IBM.get_id('WWPN')
+
+Get the id from host by the WWPN.
+
+>>> print my_ds8k.get_hostname('10234567890abcde')[1]
+LNXDBSRV001_TESTS
+
+
+
+* IBM.get_volgrpid('WWPN')
+
+Get the Volume Group ID from host by the WWPN.
+
+>>> print my_ds8k.get_volgrpid('10234567890abcde')[1]
+V334
+
+
+* IBM.lsfbvol()
+
+List all fixed block volumes in a storage.
+Arguments can be used IBM.DS8K.lsfbvol('args')
+
+Suggestions:
+
+- To get all volumes for a specificl Volume Group use:
+
+ IBM.DS8K.lsfbvol('-volgrp VOL_GROUP_ID')
+
+- To get all  volumes with IDs that contain the specified logical subsystem
+ID use:
+
+IBM.DS8K.lsfbvol('-lss LSS_ID')
+
+>>> print my_ds8k.lsfbvol('-lss 01')
+Date/Time: January 21, 2016 11:55:35 AM BRST IBM DSCLI Version: 7.7.5.61 DS: IBM.2107-82BWXYZ
+Name        ID   accstate datastate configstate deviceMTM datatype extpool cap (2^30B) cap (10^9B) cap (blocks)
+===================================================================================================================
+LUN_0100    0000 Online   Normal    Normal      2107-900  FB 512   P1             50.0           -    104857600
+LUN_0101    0001 Online   Normal    Normal      2107-900  FB 512   P1             50.0           -    104857600
+LUN_0102    0002 Online   Normal    Normal      2107-900  FB 512   P1             50.0           -    104857600
+(...)
+
+
+
+* IBM.DS8K.mkfbvol(pool, size, prefix, vol_group, address)
+
+Create the fbvol(s) and allocate to the Volume Group.
+
+>>> print my_ds8k.mkfbvol('P1', 50, 'LUN_', 'V334', '0100 0101 0102 0103')
+FB volume 0100 successfully created.
+FB volume 0101 successfully created.
+FB volume 0102 successfully created.
+FB volume 0103 successfully created.
+
+
+* IBM.DSK8K.chvolgrp(vol_address, vol_group):
+
+Add a volume in another volume group.
+
+>>> my_ds8k.chvolgrp('0101-0103', 'V335')
+Volume group V335 successfully modified.
+
+
+
 Contributing
-=============
+============
 
 Make a fork from GitHub ( https://github.com/kairoaraujo/PyStorage ) and send
 your improvements.
