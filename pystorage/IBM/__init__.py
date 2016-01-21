@@ -2,4 +2,4 @@
 # -*- coding: utf-8 -*-
 #
 #
-from ds8k import DS8K
+from .ds8k import DS8K
