@@ -64,26 +64,3 @@ def gb2cyl(size):
 
     else:
         return base50(size)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
