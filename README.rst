@@ -10,6 +10,11 @@ Python Storage Disk Toolkit (PyStorage)
 :License:     BSD
 :Development: https://github.com/kairoaraujo/PyStorage
 
+.. contents::
+    :local:
+    :depth: 2
+    :backlinks: none
+
 Overview
 ========
 
@@ -43,14 +48,15 @@ Download the package on https://pypi.python.org/pypi/PyStorage/
     $ cd PyStorage-X.Y
     $ python setup.py install
 
-Using:
-======
+Using
+=====
 
-* EMC.VMAX
+EMC.VMAX
+--------
 
 It's works with Storage Disk EMC VMAX.
 
-**Importing and initializing**
+* Importing and initializing
 
 >>> import pystorage
 >>> symcli_path = '/opt/emc/SYMCLI/bin'
@@ -58,7 +64,7 @@ It's works with Storage Disk EMC VMAX.
 
 
 
-**EMC.list()**
+* EMC.list()
 
 List all Storages Disk available.
 
@@ -80,7 +86,7 @@ returns array [return code, output]
 
 
 
-**EMC.lspools(SID)**
+* EMC.lspools(SID)
 
 List all Pools from specific storage SID.
 
@@ -105,7 +111,7 @@ Tracks                           2380882128 1835867964  545014164   22    0
 
 
 
-**EMC.ign(SID, WWN)**
+* EMC.ign(SID, WWN)
 
 Get Initial Group Name full output by the WWN.
 
@@ -119,7 +125,7 @@ IG_LNXDBSRV001
 
 
 
-**EMC.get_ign(SID, WWN)**
+* EMC.get_ign(SID, WWN)
 
 Get Initial Group Name, only the Initial Group Name.
 
@@ -130,7 +136,7 @@ IG_LNXDBSRV001
 
 
 
-**EMC.mvn(SID, 'INITIAL GROUP NAME')**
+* EMC.mvn(SID, 'INITIAL GROUP NAME')
 
 Get the Mask View Names with full informations using the Initiator Group Name.
 
@@ -157,7 +163,7 @@ Group last update time  : 12:46:36 PM on Tue Dec 09,2014
 
 
 
-**EMC.get_mvn(SID, 'INITIAL GROUP NAME')**
+* EMC.get_mvn(SID, 'INITIAL GROUP NAME')
 
 Get Mask View Name by the Initial Group Name.
 
@@ -168,7 +174,7 @@ MV_LNXDBSRV001
 
 
 
-**EMC.sgn(SID, 'MASK VIEW NAME')**
+* EMC.sgn(SID, 'MASK VIEW NAME')
 
 Get the full Storage Group Name information by the Mask View Name.
 
@@ -208,7 +214,7 @@ Total Capacity                                              12
 
 
 
-**EMC.get_sgn(SID, 'MASK VIEW NAME')**
+* EMC.get_sgn(SID, 'MASK VIEW NAME')
 
 Get the Storage Group Name by the Mask View Name
 
@@ -219,8 +225,7 @@ SG_LNXDBSRV001
 
 
 
-**EMC.create_dev(SID, COUNT, 'LUN SIZE', 'MEMBER SIZE', 'REGULAR or META',**
-**'POOL', 'STORAGE GROUP NAME' 'PREPARE or COMMIT')**
+* EMC.create_dev(SID, COUNT, 'LUN SIZE', 'MEMBER SIZE', 'REGULAR or META','POOL', 'STORAGE GROUP NAME' 'PREPARE or COMMIT')
 
 Create and add LUN to Storage Group Name.
 
@@ -248,7 +253,7 @@ return array [return code, output]
       New symdevs: 00D28:00D29 [TDEVs]
     Terminating the configuration change session..............Done.
 
-Contributing:
+Contributing
 =============
 
 Make a fork from GitHub ( https://github.com/kairoaraujo/PyStorage ) and send
@@ -256,8 +261,8 @@ your improvements.
 
 Create a new issue https://github.com/kairoaraujo/PyStorage/issues
 
-IMPORTANT:
-==========
+Important
+=========
 
 EMC, SYMCLI and VMAX are trademarks of EMC in the United States, other
 countries, or both.
