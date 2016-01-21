@@ -8,7 +8,10 @@ from pystorage import calc
 
 class VMAX(object):
     """
-    Class VMAX works with EMC VMAX Storage.
+    Class EMC.VMAX() works with EMC VMAX Storage 1 and 2.
+
+    Is necessary a SYMCLI installed and working well with your environment.
+    For more information consult the EMC documentation.
     """
 
     def __init__(self, symcli_path=''):
@@ -23,7 +26,7 @@ class VMAX(object):
         :return: representation (<VMAX>).
         """
 
-        representation = '<VMAX>'
+        representation = '<pystorage.EMC.VMAX>'
         return representation
 
     def validate_args(self):
@@ -97,17 +100,14 @@ class VMAX(object):
 
         self.validate_args()
 
-        ign_cmd = "{0}/symaccess -sid {1} -type init list -wwn {2}".format(
-            self.symcli_path, sid, wwn)
-
-        ign_out = runsub.cmd(ign_cmd)
+        ign_out = self.ign(sid, wwn)
 
         if ign_out[0] == 0:
             # spliting in lines
-            ign_out_splited = ign_out[1].split('\n')
+            ign_out_splitted = ign_out[1].split('\n')
             # cleaning the empty elements (filter) and removing whitespaces
-            ign_out_splited = filter(None, ign_out_splited)[-1].split()[0]
-            return ign_out[0], ign_out_splited
+            ign_out_splitted = filter(None, ign_out_splitted)[-1].split()[0]
+            return ign_out[0], ign_out_splitted
         else:
             return ign_out
 
@@ -139,20 +139,17 @@ class VMAX(object):
         """
         self.validate_args()
 
-        mvn_cmd = "{0}/symaccess -sid {1} -type init show {2}".format(
-            self.symcli_path, sid, ign)
-
-        mvn_out = runsub.cmd(mvn_cmd)
+        mvn_out = self.mvn(sid, ign)
 
         if mvn_out[0] == 0:
-            mvn_splited = mvn_out[1].split(
+            mvn_splitted = mvn_out[1].split(
                     'Masking View Names'
             )[1].split(
                     '{'
             )[1].split(
                     '}')[0]
 
-            mvn_array = [line for line in mvn_splited.split('\n') if
+            mvn_array = [line for line in mvn_splitted.split('\n') if
                          line.strip() != '']
 
             mvn_out = [mvn_out[0]]
@@ -192,16 +189,13 @@ class VMAX(object):
          """
         self.validate_args()
 
-        sgn_cmd = '{0}/symaccess -sid {1} show view {2}'.format(
-            self.symcli_path, sid, mvn)
-
-        sgn_out = runsub.cmd(sgn_cmd)
+        sgn_out = self.sgn(sid, mvn)
 
         if sgn_out[0] == 0:
-            sgn_out_splited = sgn_out[1].split('Storage Group Name ')[1]
-            sgn_out_splited = sgn_out_splited.split()[1]
+            sgn_out_splitted = sgn_out[1].split('Storage Group Name ')[1]
+            sgn_out_splitted = sgn_out_splitted.split()[1]
 
-            return sgn_out[0], sgn_out_splited
+            return sgn_out[0], sgn_out_splitted
         else:
             return sgn_out
 
