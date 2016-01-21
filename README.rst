@@ -330,7 +330,7 @@ LNXDBSRV001_TESTS
 Get the id from host by the WWPN.
 
 >>> print my_ds8k.get_hostname('10234567890abcde')[1]
-LNXDBSRV001_TESTS
+03DB
 
 
 
@@ -349,11 +349,11 @@ Arguments can be used IBM.DS8K.lsfbvol('args')
 
 Suggestions:
 
-- To get all volumes for a specificl Volume Group use:
+To get all volumes for a specificl Volume Group use:
 
- IBM.DS8K.lsfbvol('-volgrp VOL_GROUP_ID')
+IBM.DS8K.lsfbvol('-volgrp VOL_GROUP_ID')
 
-- To get all  volumes with IDs that contain the specified logical subsystem
+To get all  volumes with IDs that contain the specified logical subsystem
 ID use:
 
 IBM.DS8K.lsfbvol('-lss LSS_ID')
