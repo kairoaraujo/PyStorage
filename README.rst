@@ -293,7 +293,7 @@ List all available pools, full output.
 return [return code, output]
 
 >>> print my_ds8k.lsextpool()[1]
-Date/Time: January 21, 2016 10:34:07 AM BRST IBM DSCLI Version: 7.7.5.61 DS: IBM.2107-82BCN51
+Date/Time: January 21, 2016 10:34:07 AM BRST IBM DSCLI Version: 7.7.5.61 DS: IBM.2107-82BWXYZ
 Name ID stgtype rankgrp status availstor (2^30B) %allocated available reserved numvols
 ======================================================================================
 P0   P0 fb            0  below             14285         96     14285        0    2948
