@@ -39,6 +39,13 @@ class DS8K(object):
         representation = '<pystorage.IBM.DS8K>'
         return representation
 
+    def _check_internal_rc(self, return_internal):
+        if "CMUC00234I" in return_internal[1].split('\n')[1]:
+            return [3, return_internal[1]]
+
+        else:
+            return return_internal
+
     def lsextpool(self, args=''):
         """
         Get the available pools on DS.
@@ -81,6 +88,7 @@ class DS8K(object):
         """
 
         hostname_out = self.lshostconnect(wwpn)
+        hostname_out = self._check_internal_rc(hostname_out)
 
         if hostname_out[0] == 0:
             hostname_splitted = hostname_out[1].split('\n')[3].split()[0]
@@ -88,6 +96,7 @@ class DS8K(object):
             return hostname_out[0], hostname_splitted
 
         else:
+
             return hostname_out
 
     def get_id(self, wwpn=''):
@@ -99,6 +108,7 @@ class DS8K(object):
         """
 
         id_out = self.lshostconnect(wwpn)
+        id_out = self._check_internal_rc(id_out)
 
         if id_out[0] == 0:
             id_splitted = id_out[1].split('\n')[3].split()[1]
@@ -119,6 +129,7 @@ class DS8K(object):
         """
 
         volgrpid_out = self.lshostconnect(wwpn)
+        volgrpid_out = self._check_internal_rc(volgrpid_out)
 
         if volgrpid_out[0] == 0:
             volgrpid_splitted = volgrpid_out[1].split('\n')[3].split()[-2]
