@@ -349,7 +349,7 @@ Arguments can be used IBM.DS8K.lsfbvol('args')
 
 Suggestions:
 
-To get all volumes for a specificl Volume Group use:
+To get all volumes for a specific Volume Group use:
 
 IBM.DS8K.lsfbvol('-volgrp VOL_GROUP_ID')
 
