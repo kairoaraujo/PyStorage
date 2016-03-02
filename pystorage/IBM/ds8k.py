@@ -18,6 +18,11 @@ class DS8K(object):
     'http://www-01.ibm.com/support/knowledgecenter/#!/STUVMB/
     com.ibm.storage.ssic.help.doc/f2c_cliprofile_1yecd2.html'
 
+    The default return for any command is an array:
+    If command is OK:
+    [return code, output]
+    If command is not OK:
+    [return code, error, output]
     """
 
     def __init__(self, dscli_bin, dscli_profile):

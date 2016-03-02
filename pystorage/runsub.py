@@ -10,7 +10,9 @@ def cmd(command_line, shell=False):
 
     :param command_line: Full Command line as string
     :param shell: True or False (the same function on
-    :return: the return code and the output of command or error
+    :return: return code and the output of command or error
+             if return code is different of 0 (error) the return is, return
+             code, error output and output.
     """
 
     if shell:
@@ -31,5 +33,5 @@ def cmd(command_line, shell=False):
     if c.returncode == 0:
         return c.returncode, c_out
     else:
-        return c.returncode, c_err
+        return c.returncode, c_err, c_out
 

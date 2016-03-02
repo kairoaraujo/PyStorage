@@ -12,6 +12,12 @@ class VMAX(object):
 
     Is necessary a SYMCLI installed and working well with your environment.
     For more information consult the EMC documentation.
+
+    The default return for any command is an array:
+    If command is OK:
+    [return code, output]
+    If command is not OK:
+    [return code, error, output]
     """
 
     def __init__(self, symcli_path=''):
