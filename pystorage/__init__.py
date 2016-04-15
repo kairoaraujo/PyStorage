@@ -3,4 +3,5 @@
 #
 #
 from .EMC import VMAX
+from .EMC import VNX
 from .IBM import DS8K
