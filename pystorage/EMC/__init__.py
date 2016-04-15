@@ -3,4 +3,5 @@
 #
 #
 from .vmax import VMAX
+from .vnx import  VNX
 
