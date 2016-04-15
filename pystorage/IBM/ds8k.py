@@ -202,7 +202,7 @@ class DS8K(object):
         :return: array as [return code, output].
         """
 
-        chvolgrp_cmd = '{0} chvolgrp -action add -volume {1} -volgrp {2}'\
+        chvolgrp_cmd = '{0} chvolgrp -action add -volume {1} {2}'\
             .format(self.base_cmd, vol_address, vol_group)
 
         chvolgrp_out = runsub.cmd(chvolgrp_cmd)
