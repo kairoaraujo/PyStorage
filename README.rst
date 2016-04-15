@@ -18,10 +18,21 @@ Python Storage Disk Toolkit (PyStorage)
 Overview
 ========
 
-This is a collection of storage disk commands.
+This is a collection of storage disk partial commands.
 
-At the moment, the current version is supporting some commands of EMC VMAX
-Storage.
+Table of support:
+
++--------+----------+
+| Vendor | Models   |
++========+==========+
+|        |  - VMAX  |
++ EMC    +  - VNX   |
+|        |          |
++--------+----------+
+| IBM    | - DS8K   |
++--------+----------+
+
+
 
 Requirements
 ============
@@ -53,7 +64,10 @@ Using
 
 * EMC.VMAX_
 
+* EMC.VNX_
+
 * IBM.DS8K_
+
 
 .. _EMC.VMAX:
 
@@ -73,7 +87,7 @@ For more information consult the EMC documentation.
 
 
 
-* EMC.list()
+* EMC.VMAX.list()
 
 List all Storages Disk available.
 
@@ -95,7 +109,7 @@ returns array [return code, output]
 
 
 
-* EMC.lspools(SID)
+* EMC.VMAX.lspools(SID)
 
 List all Pools from specific storage SID.
 
@@ -120,7 +134,7 @@ Tracks                           2380882128 1835867964  545014164   22    0
 
 
 
-* EMC.ign(SID, WWN)
+* EMC.VMAX.ign(SID, WWN)
 
 Get Initial Group Name full output by the WWN.
 
@@ -134,7 +148,7 @@ IG_LNXDBSRV001
 
 
 
-* EMC.get_ign(SID, WWN)
+* EMC.VMAX.get_ign(SID, WWN)
 
 Get Initial Group Name, only the Initial Group Name.
 
@@ -145,7 +159,7 @@ IG_LNXDBSRV001
 
 
 
-* EMC.mvn(SID, 'INITIAL GROUP NAME')
+* EMC.VMAX.mvn(SID, 'INITIAL GROUP NAME')
 
 Get the Mask View Names with full informations using the Initiator Group Name.
 
@@ -172,7 +186,7 @@ Group last update time  : 12:46:36 PM on Tue Dec 09,2014
 
 
 
-* EMC.get_mvn(SID, 'INITIAL GROUP NAME')
+* EMC.VMAX.get_mvn(SID, 'INITIAL GROUP NAME')
 
 Get Mask View Name by the Initial Group Name.
 
@@ -183,7 +197,7 @@ MV_LNXDBSRV001
 
 
 
-* EMC.sgn(SID, 'MASK VIEW NAME')
+* EMC.VMAX.sgn(SID, 'MASK VIEW NAME')
 
 Get the full Storage Group Name information by the Mask View Name.
 
@@ -223,7 +237,7 @@ Total Capacity                                              12
 
 
 
-* EMC.get_sgn(SID, 'MASK VIEW NAME')
+* EMC.VMAX.get_sgn(SID, 'MASK VIEW NAME')
 
 Get the Storage Group Name by the Mask View Name
 
@@ -234,7 +248,7 @@ SG_LNXDBSRV001
 
 
 
-* EMC.create_dev(SID, COUNT, 'LUN SIZE', 'MEMBER SIZE', 'REGULAR or META','POOL', 'STORAGE GROUP NAME' 'PREPARE or COMMIT')
+* EMC.VMAX.create_dev(SID, COUNT, 'LUN SIZE', 'MEMBER SIZE', 'REGULAR or META','POOL', 'STORAGE GROUP NAME' 'PREPARE or COMMIT')
 
 Create and add LUN to Storage Group Name.
 
@@ -261,6 +275,247 @@ return array [return code, output]
     Adding devices to Storage Group...........................
       New symdevs: 00D28:00D29 [TDEVs]
     Terminating the configuration change session..............Done.
+
+
+.. _EMC.VNX:
+
+EMC.VNX
+-------
+
+Class EMC.VNX() works with EMC VNX.
+
+Is necessary a NAVISECCLI installed and working well with your environment.
+For more information consult the EMC documentation.
+
+All returns are:
+
+If return code is 0: [return code, data]
+
+If return code is different of 0: [return code, 'data error', 'data'
+
+* Importing and initializing
+
+>>> import pystorage
+>>> vnx = pystorage.VNX('naviseccli', '10.0.0.1')
+
+* EMC.VNX.pools()
+
+List all pools informations.
+
+
+>>> print vnx.pools()[1]
+Pool Name:  P1SAS600K15
+Pool ID:  0
+Raid Type:  r_5
+Percent Full Threshold:  70
+Description:
+Disk Type:  SAS
+State:  Ready
+Status:  OK(0x0)
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Raw Capacity (Blocks):  236411400960
+Raw Capacity (GBs):  112729.741
+User Capacity (Blocks):  188771917824
+User Capacity (GBs):  90013.465
+Consumed Capacity (Blocks):  187616231424
+Consumed Capacity (GBs):  89462.391
+Available Capacity (Blocks):  1155686400
+Available Capacity (GBs):  551.074
+Percent Full:  99.388
+Total Subscribed Capacity (Blocks):  189324546048
+Total Subscribed Capacity (GBs):  90276.979
+Percent Subscribed:  100.293
+Oversubscribed by (Blocks):  552628224
+Oversubscribed by (GBs):  263.514
+(...)
+Disks:
+Bus 2 Enclosure 2 Disk 10
+Bus 2 Enclosure 2 Disk 12
+Bus 2 Enclosure 2 Disk 14
+Bus 3 Enclosure 3 Disk
+LUNs:  806, 677, 198, 896, 479, 768, 620, 708, (...)
+(... End of Example ...)
+
+* EMC.VNX.pool_list()
+
+Return array with pool names
+
+>>> vnx.pool_list()[1]
+['P1SAS600K15']
+
+
+* EMC.VNX.port_list_all()
+
+Return all data about port list from storage
+
+
+>>> print vnx.port_list_all()[1]
+Information about each HBA:
+HBA UID:                 C0:50:76:05:17:AA:00:2C:C0:50:76:05:17:AA:00:2C
+Server Name:             MYSERVER01
+Server IP Address:       10.10.10.10
+HBA Model Description:
+HBA Vendor Description:
+HBA Device Driver Name:   N/A
+Information about each port of this HBA:
+    SP Name:               SP A
+    SP Port ID:            4
+    HBA Devicename:        N/A
+    Trusted:               NO
+    Logged In:             YES
+    Source ID:             3943170
+    Defined:               YES
+    Initiator Type:           3
+    StorageGroup Name:     SG_MYSERVER01
+.
+    SP Name:               SP B
+    SP Port ID:            4
+    HBA Devicename:        N/A
+    Trusted:               NO
+    Logged In:             YES
+    Source ID:             3943170
+    Defined:               YES
+    Initiator Type:           3
+    StorageGroup Name:     SG_MYSERVER01
+.
+Information about each HBA:
+HBA UID:                 C0:50:76:05:17:AA:00:2E:C0:50:76:05:17:AA:00:2E
+Server Name:             MYSERVER02
+Server IP Address:       10.10.10.11
+HBA Model Description:
+HBA Vendor Description:
+HBA Device Driver Name:   N/A
+Information about each port of this HBA:
+(...end of example...)
+
+
+* EMC.VNX.get_luns('POOL')
+
+Get all LUNs IDs used in the pool sorted.
+
+>>> print vnx.get_luns('P1SAS600K15')[1]
+['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11' ...]
+
+
+* EMC.VNX.show_lun('ID')
+
+Get information about specific LUN ID.
+
+
+>>> print vnx.show_lun('3')[1]
+LOGICAL UNIT NUMBER 3
+Name:  DB_LUN_3
+UID:  60:06:01:60:20:A0:2D:00:36:1B:B4:88:A3:A9:E1:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  943718400
+User Capacity (GBs):  450.000
+Consumed Capacity (Blocks):  972877824
+Consumed Capacity (GBs):  463.904
+Pool Name:  P1SAS600K15
+Raid Type:  r_5
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  No
+Is Private:  No
+Is Compressed:  No
+Tiering Policy:  No Movement
+Initial Tier:  Optimize Pool
+Tier Distribution:
+Performance:  100.00
+
+
+* EMC.VNX.get_hostname('WWN')
+
+Get the Hostname on storage by host WWN address.
+
+>>> print vnx.get_hostname('C0:50:76:05:14:5F:00:30')[1]
+SERVER_DB02
+
+
+* EMC.VNX.get_stggroup('WWN')
+
+Get the Storage Group Name on storage used by host WWN address.
+
+>>> print vnx.get_stggroup('C0:50:76:05:14:5F:00:30')[1]
+SG_SERVER_DB2
+
+
+* EMC.VNX.show_stggroup('STORAGE GROUP NAME')
+
+Get all informations about the specific storage group name.
+
+>>> print vnx.show_stggroup('SG_SERVER_DB2')[1]
+Storage Group Name:    SG_SERVER_DB2
+Storage Group UID:     D2:F2:E2:05:89:2F:E3:11:B6:12:00:60:16:38:6D:4F
+HBA/SP Pairs:
+.
+  HBA UID                                          SP Name     SPPort
+  -------                                          -------     ------
+  20:00:00:24:FF:40:1B:3F:21:00:00:24:FF:40:1B:3F   SP A         7
+  20:00:00:24:FF:40:35:C1:21:00:00:24:FF:40:35:C1   SP A         7
+  20:00:00:24:FF:40:1B:3F:21:00:00:24:FF:40:1B:3F   SP B         7
+  20:00:00:24:FF:40:35:C1:21:00:00:24:FF:40:35:C1   SP B         7
+  20:00:00:24:FF:40:1B:4F:21:00:00:24:FF:40:1B:4F   SP A         7
+  20:00:00:24:FF:40:1B:4F:21:00:00:24:FF:40:1B:4F   SP B         7
+  20:00:00:24:FF:40:1A:3E:21:00:00:24:FF:40:1A:3E   SP A         3
+  20:00:00:24:FF:40:1A:3E:21:00:00:24:FF:40:1A:3E   SP B         3
+  20:00:00:24:FF:40:35:C0:21:00:00:24:FF:40:35:C0   SP A         3
+  20:00:00:24:FF:40:1B:4E:21:00:00:24:FF:40:1B:4E   SP A         3
+  20:00:00:24:FF:40:35:C0:21:00:00:24:FF:40:35:C0   SP B         3
+  20:00:00:24:FF:40:1B:4E:21:00:00:24:FF:40:1B:4E   SP B         3
+  20:00:00:24:FF:40:1A:3F:21:00:00:24:FF:40:1A:3F   SP A         7
+  20:00:00:24:FF:40:1A:3F:21:00:00:24:FF:40:1A:3F   SP B         7
+.
+HLU/ALU Pairs:
+.
+  HLU Number     ALU Number
+  ----------     ----------
+    0               923
+    1               920
+    2               925
+    3               922
+    4               1040
+    5               1041
+    6               1042
+Shareable:             YES
+
+
+* EMC.VNX.get_hlu_stggroup('STORAGE GROUP NAME')
+
+Get all the HLU IDs in use on the Storage Group Name
+
+>>> print vnx.get_hlu_stggroup('ALE_CLUSTER_ALELOESXRJ01-02-03-04')[1]
+['0', '1', '2', '3', '4', '5', '6']
+
+
+* EMC.VNX.create_dev('address', 'lun_size', 'pool_name', 'LUN ID', 'LUN', lun_type="NonThin")
+
+Create LUN on specific pool
+
+>>> vnx.create_dev('10.0.0.1', 50, 'P1SAS600K15', '103' 'DB2_LUN_103', lun_type="NonThin"):
+
+
+* EMC.VNX.mapping_dev('STORAGR GROUP NAME', 'HLU ID', 'LUN ID'):
+
+Add (Mapping) of LUN to Storage Group Name
+
+>>> vnx.mapping_dev('SG_SERVER_DB2', '7', '103')
+
 
 .. _IBM.DS8K:
 
@@ -392,10 +647,16 @@ Volume group V335 successfully modified.
 Contributing
 ============
 
-Make a fork from GitHub ( https://github.com/kairoaraujo/PyStorage ) and send
-your improvements.
+* Coding
 
-Create a new issue https://github.com/kairoaraujo/PyStorage/issues
+1. Create your account on GitHub
+2. Make a fork from GitHub (https://github.com/kairoaraujo/PyStorage)
+3. Sign in on GerritHub.io (http://review.gerrithub.io) using your account from GitHub
+4. Submit you review =)
+
+* Reporting Issue or suggestions
+
+1. Create a new issue https://github.com/kairoaraujo/PyStorage/issues
 
 Important
 =========
