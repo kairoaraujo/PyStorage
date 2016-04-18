@@ -499,7 +499,7 @@ Shareable:             YES
 
 Get all the HLU IDs in use on the Storage Group Name
 
->>> print vnx.get_hlu_stggroup('ALE_CLUSTER_ALELOESXRJ01-02-03-04')[1]
+>>> print vnx.get_hlu_stggroup('SG_SERVER_DB2')[1]
 ['0', '1', '2', '3', '4', '5', '6']
 
 
