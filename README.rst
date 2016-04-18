@@ -510,7 +510,7 @@ Create LUN on specific pool
 >>> vnx.create_dev('10.0.0.1', 50, 'P1SAS600K15', '103' 'DB2_LUN_103', lun_type="NonThin"):
 
 
-* EMC.VNX.mapping_dev('STORAGR GROUP NAME', 'HLU ID', 'LUN ID'):
+* EMC.VNX.mapping_dev('STORAGE GROUP NAME', 'HLU ID', 'LUN ID'):
 
 Add (Mapping) of LUN to Storage Group Name
 
