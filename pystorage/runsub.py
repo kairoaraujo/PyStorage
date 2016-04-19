@@ -4,9 +4,9 @@
 #
 import subprocess
 
+
 def cmd(command_line, shell=False):
-    """
-    Execute the command using subprocess.
+    """Execute the command using subprocess.
 
     :param command_line: Full Command line as string
     :param shell: True or False (the same function on
@@ -34,4 +34,3 @@ def cmd(command_line, shell=False):
         return c.returncode, c_out
     else:
         return c.returncode, c_err, c_out
-

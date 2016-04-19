@@ -6,9 +6,7 @@ from pystorage import runsub
 
 
 class VNX(object):
-    """
-    Class EMC.VNX() works with EMC VNX
-
+    """Class EMC.VNX() works with EMC VNX
 
     The default return for any command is an array:
     If command is OK:
@@ -19,9 +17,7 @@ class VNX(object):
 
     def __init__(self, naviseccli_path='', fst_address='', sec_address='',
                  user='admin', password='password', scope='0'):
-        """
-        :param naviseccli_path: Path installation of NAVISECCLI
-        """
+        """:param naviseccli_path: Path installation of NAVISECCLI"""
 
         self.naviseccli_path = naviseccli_path
         self.fst_address = fst_address
@@ -31,15 +27,14 @@ class VNX(object):
         self.scope = scope
 
     def __repr__(self):
-        """
-        :return: representation (<VNX>).
-        """
+        """:return: representation (<VNX>)."""
 
         representation = '<pystorage.EMC.VNX>'
         return representation
 
     def _init_vnx(self):
-        """
+        """Initialize the VNX session.
+
         Initialize the VNX session adding user security scope auth
         for the shell session/user.
 
@@ -62,10 +57,10 @@ class VNX(object):
         runsub.cmd(init_2ip_cmd)
 
     def _validate_wwn(self, wwn='None'):
-        """
-        Validate and format the WWN.
+        """Validate and format the WWN.
 
         :param wwn: the wwn information
+
         :return: default return
                  If command is OK:
                  [return code, output]
@@ -85,8 +80,7 @@ class VNX(object):
             return 1, 'Invalid WWN: {0}'.format(wwn)
 
     def pools(self):
-        """
-        List all storage pools from VNX
+        """List all storage pools from VNX
 
         :return: default return
                  If command is OK:
@@ -105,8 +99,7 @@ class VNX(object):
         return pools_out
 
     def pool_list(self):
-        """
-        List the pool list names in one array.
+        """List the pool list names in one array.
 
         :return: default return
                  If command is OK:
@@ -129,8 +122,7 @@ class VNX(object):
         return 0, list_pool
 
     def port_list_all(self):
-        """
-        List all port (servers/hosts) from VNX configured.
+        """List all port (servers/hosts) from VNX configured.
 
         :return: default return
                  If command is OK:
@@ -138,6 +130,7 @@ class VNX(object):
                  If command is not OK:
                  [return code, error, output]
         """
+
         port_list_cmd = '{0} -h {1} port -list'.format(
             self.naviseccli_path,
             self.fst_address
@@ -147,8 +140,7 @@ class VNX(object):
         return port_list_out
 
     def get_luns(self, pool_name='None'):
-        """
-        Get all LUNs IDs used by pool sorted.
+        """Get all LUNs IDs used by pool sorted.
 
         :param pool_name: the pool name see pool_list()
         :return: default return
@@ -165,7 +157,7 @@ class VNX(object):
 
         list_luns_out = runsub.cmd(list_luns_cmd)
 
-        luns_ids =[]
+        luns_ids = []
         if list_luns_out[0] == 0:
             for line in list_luns_out[1].split('\n'):
                 if line.startswith('LUNs:'):
@@ -182,8 +174,7 @@ class VNX(object):
             return 0, luns_ids
 
     def show_lun(self, lun_id):
-        """
-        Get information about specific LUN ID.
+        """Get information about specific LUN ID.
 
         :param lun_id: LUN ID (string)
         :return: default return
@@ -205,8 +196,7 @@ class VNX(object):
         return show_lun_out
 
     def get_hostname(self, wwn=''):
-        """
-        Get the Hostname on storage by host WWN address.
+        """Get the Hostname on storage by host WWN address.
 
         :param wwn: WWN Address
         :return: default return
@@ -247,8 +237,7 @@ class VNX(object):
             return 0, hostname
 
     def get_stggroup(self, wwn=''):
-        """
-        Get the Storage Group Name on storage used by host WWN address.
+        """Get the Storage Group Name on storage used by host WWN address.
 
         :param wwn: WWN address
         :return: default return
@@ -288,10 +277,8 @@ class VNX(object):
         else:
             return 0, stggroup
 
-
     def show_stggroup(self, stggroup_name):
-        """
-        Get all informations about the specific storage group name.
+        """Get all informations about the specific storage group name.
 
         :param stggroup_name: Storage Group Name
         :return: default return
@@ -310,10 +297,8 @@ class VNX(object):
 
         return show_stggroup_out
 
-
     def get_hlu_stggroup(self, stggroup_name):
-        """
-        Get all the HLU IDs in use on the Storage Group Name
+        """Get all the HLU IDs in use on the Storage Group Name
 
         :param stggroup_name: Storage Group Name
         :return: default return
@@ -350,8 +335,7 @@ class VNX(object):
 
     def create_dev(self, address=None, lun_size=None, pool_name=None,
                    lu=None, lun_name=None, lun_type="NonThin"):
-        """
-        Create LUN on specific pool
+        """Create LUN on specific pool
 
         :param address: address of storage
         :param lun_size:  size of lun in GB (ex: 50GB)
@@ -367,22 +351,20 @@ class VNX(object):
         """
 
         create_dev_cmd = "{0} -h {1} lun -create -type {6} -capacity {2} " \
-                         "-sq gb -poolName {3} -aa 1 -l {4} -name {5}".format(
-            self.naviseccli_path,
-            address,
-            lun_size,
-            pool_name,
-            lu,
-            lun_name,
-            lun_type
-        )
+                         "-sq gb -poolName {3} -aa 1 -l {4} -name " \
+                         "{5}".format(self.naviseccli_path,
+                                      address,
+                                      lun_size,
+                                      pool_name,
+                                      lu,
+                                      lun_name,
+                                      lun_type)
 
         create_dev_cmd_out = runsub.cmd(create_dev_cmd)
         return create_dev_cmd_out
 
     def mapping_dev(self, stggroup='None', hlu='None', alu='None'):
-        """
-        Add (Mapping) of LUN to Storage Group Name
+        """Add (Mapping) of LUN to Storage Group Name
 
         :param stggroup: Storage Group Name
         :param hlu: HLU to be used on Storage Group Name
@@ -395,16 +377,15 @@ class VNX(object):
         """
 
         mapping_dev_cmd = "{0} -h {1} -user {2} -password {3} -scope {4} " \
-                          "storagegroup -addhlu -gname {5} -hlu {6} -alu {7}" \
-            .format(
-            self.naviseccli_path,
-            self.fst_address,
-            self.user,
-            self.password,
-            self.scope,
-            stggroup,
-            hlu,
-            alu)
+                          "storagegroup -addhlu -gname {5} -hlu {6} -alu " \
+                          "{7}".format(self.naviseccli_path,
+                                       self.fst_address,
+                                       self.user,
+                                       self.password,
+                                       self.scope,
+                                       stggroup,
+                                       hlu,
+                                       alu)
 
         mapping_dev_cmd_out = runsub.cmd(mapping_dev_cmd)
         return mapping_dev_cmd_out

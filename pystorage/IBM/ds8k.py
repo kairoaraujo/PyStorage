@@ -4,9 +4,9 @@
 #
 from pystorage import runsub
 
+
 class DS8K(object):
-    """
-    Class IBM.DS8K() works with IBM DS8000 System Storage family.
+    """Class IBM.DS8K() works with IBM DS8000 System Storage family.
 
     Is necessary a DSCLI installed and configured using profile files by
     storage.
@@ -26,7 +26,8 @@ class DS8K(object):
     """
 
     def __init__(self, dscli_bin, dscli_profile):
-        """
+        """Required values:
+
         :param dscli_bin: Path of DSCLI binary
         :param dscli_profile: dscli.profile of storage
         """
@@ -34,10 +35,11 @@ class DS8K(object):
         self.dscli_bin = dscli_bin
         self.dscli_profile = dscli_profile
         self.base_cmd = '{0} -cfg {1}'.format(self.dscli_bin,
-                                              self.dscli_profile )
+                                              self.dscli_profile)
 
     def __repr__(self):
-        """
+        """Representation
+
         :return: representation (<DS8K>).
         """
 
@@ -52,10 +54,10 @@ class DS8K(object):
             return return_internal
 
     def lsextpool(self, args=''):
-        """
-        Get the available pools on DS.
+        """Get the available pools on DS.
 
         :param args: use to pass some arguments such as -l .
+
         :return: array as [return code, output].
         """
 
@@ -65,13 +67,15 @@ class DS8K(object):
         return lsextpool_out
 
     def lshostconnect(self, wwpn=None):
-        """
-        Get the list of hosts. If used with WWPN return informations
-        from specified WWPN host.
+        """Get the list of hosts.
 
-        :param wwpn: optional
+        If used with WWPN return informations from specified WWPN host.
+
+        :param wwpn: optional.
+
         :return: array as [return code, output].
         """
+
         if wwpn is None:
             lshostconnect_cmd = '{0} lshostconnect'.format(
                 self.base_cmd)
@@ -85,10 +89,10 @@ class DS8K(object):
         return lshostconnect_out
 
     def get_hostname(self, wwpn=''):
-        """
-        Get the hostname from host by the WWPN.
+        """Get the hostname from host by the WWPN.
 
         :param wwpn: The WWPN from the host that you want to get the name.
+
         :return: array as [return code, output].
         """
 
@@ -105,10 +109,10 @@ class DS8K(object):
             return hostname_out
 
     def get_id(self, wwpn=''):
-        """
-        Get the hostname from host by the WWPN.
+        """Get the hostname from host by the WWPN.
 
         :param wwpn: The WWPN from the host that you want to get the name.
+
         :return: array as [return code, output].
         """
 
@@ -123,13 +127,12 @@ class DS8K(object):
         else:
             return id_out
 
-
     def get_volgrpid(self, wwpn=''):
-        """
-        Get the Volume Group ID from host by the WWPN.
+        """Get the Volume Group ID from host by the WWPN.
 
         :param wwpn: The WWPN from the host that you want to get the Vol Group
         ID.
+
         :return: array as [return code, output].
         """
 
@@ -143,10 +146,9 @@ class DS8K(object):
         else:
             return volgrpid_out
 
-
     def lsfbvol(self, args=''):
-        """
-        List all fixed block volumes in a storage.
+        """List all fixed block volumes in a storage.
+
         Arguments can be used IBM.DS8K.lsfbvol('args')
 
         Suggestions:
@@ -157,7 +159,6 @@ class DS8K(object):
         - To get all  volumes with IDs that contain the specified logical
         subsystem ID use:
             IBM.DS8K.lsfbvol('-lss LSS_ID'
-
 
         :param args: optional parameters could be passed here
 
@@ -171,8 +172,7 @@ class DS8K(object):
 
     def mkfbvol(self, pool=None, size=None, prefix=None, vol_group=None,
                 address=None):
-        """
-        Create the fbvol(s) and allocate to the Volume Group.
+        """Create the fbvol(s) and allocate to the Volume Group.
 
         :param pool: the extpool option
         :param size: the size in GB (without GB)
@@ -183,9 +183,8 @@ class DS8K(object):
         :return: array as [return code, output].
         """
 
-
         mkfbvol_cmd = '{0} mkfbvol -extpool {1} -cap {2} -name {3}_#h -eam' \
-                      ' rotateexts -sam ese -volgrp {4} {5}'\
+                      ' rotateexts -sam ese -volgrp {4} {5}' \
             .format(self.base_cmd, pool, size, prefix, vol_group, address)
 
         mkfbvol_out = runsub.cmd(mkfbvol_cmd)
@@ -193,8 +192,7 @@ class DS8K(object):
         return mkfbvol_out
 
     def chvolgrp(self, vol_address, vol_group):
-        """
-        Add a volume in another volume group.
+        """Add a volume in another volume group.
 
         :param vol_address: volume addres from the LUN
         :param vol_group: volume group ID
@@ -202,10 +200,9 @@ class DS8K(object):
         :return: array as [return code, output].
         """
 
-        chvolgrp_cmd = '{0} chvolgrp -action add -volume {1} {2}'\
+        chvolgrp_cmd = '{0} chvolgrp -action add -volume {1} {2}' \
             .format(self.base_cmd, vol_address, vol_group)
 
         chvolgrp_out = runsub.cmd(chvolgrp_cmd)
 
         return chvolgrp_out
-
