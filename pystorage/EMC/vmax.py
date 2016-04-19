@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# 
-from pystorage import runsub
+#
 from pystorage import calc
+from pystorage import runsub
 
 
 class VMAX(object):
-    """
-    Class EMC.VMAX() works with EMC VMAX Storage 1 and 2.
+    """Class EMC.VMAX() works with EMC VMAX Storage 1 and 2.
 
     Is necessary a SYMCLI installed and working well with your environment.
     For more information consult the EMC documentation.
@@ -21,29 +20,24 @@ class VMAX(object):
     """
 
     def __init__(self, symcli_path=''):
-        """
-        :param symcli_path: Path installation of SYMCLI
-        """
+        """:param symcli_path: Path installation of SYMCLI"""
 
         self.symcli_path = symcli_path
 
     def __repr__(self):
-        """
-        :return: representation (<VMAX>).
-        """
+        """:return: representation (<VMAX>)."""
 
         representation = '<pystorage.EMC.VMAX>'
         return representation
 
     def validate_args(self):
-        """ Validate if the required args is declared. """
+        """Validate if the required args is declared."""
 
         if self.symcli_path == '':
             return 'The symcli path is required'
 
     def list(self):
-        """
-        Get informations about all available Storages
+        """Get informations about all available Storages
 
         :return: the return code and list of storages
         """
@@ -54,8 +48,8 @@ class VMAX(object):
         return symcfg_list_out
 
     def lspools(self,  sid='', args=''):
-        """
-        List all available pools on VMAX.
+        """List all available pools on VMAX.
+
         :param sid: Identification of VMAX (SID)
         :param args: is optional. You can use parameters such as -thin
 
@@ -69,34 +63,31 @@ class VMAX(object):
 
         lspools_out = runsub.cmd(lspools_cmd)
 
-
         if lspools_out[0] == 0:
             return lspools_out[0], lspools_out[1].split('Legend:')[0]
         else:
             return lspools_out
 
     def ign(self, sid='', wwn=''):
-        """
-        Get Initial Group Name (IGN) full output by the WWN.
+        """Get Initial Group Name (IGN) full output by the WWN.
 
         :param sid: Identification of VMAX (SID).
         :param wwn: wwn client.
+
         :return: array with return code and full output of IGN.
         """
 
         self.validate_args()
 
         ign_cmd = "{0}/symaccess -sid {1} -type init list -wwn {2}".format(
-                self.symcli_path, sid, wwn)
+            self.symcli_path, sid, wwn)
 
         ign_out = runsub.cmd(ign_cmd)
 
         return ign_out
 
-
     def get_ign(self, sid='', wwn=''):
-        """
-        Get the Initiator Group Name by the WWN.
+        """Get the Initiator Group Name by the WWN.
 
         :param sid: Identification of VMAX (SID).
         :param wwn: wwn client.
@@ -118,12 +109,11 @@ class VMAX(object):
             return ign_out
 
     def mvn(self, sid='', ign=''):
-        """
-        Get the Mask View Names with full informations using the Initiator
-        Group Name.
+        """Get the Mask View Names informations by the Initiator Group Name.
 
         :param sid: Identification of VMAX (SID).
         :param ign: Initiator Group Name. check get_ign() or ign().
+
         :return: the return code and full Mask View Name informations.
         """
 
@@ -134,13 +124,12 @@ class VMAX(object):
 
         return mvn_out
 
-
     def get_mvn(self, sid='', ign=''):
-        """
-        Get the Mask View Names by Initiator Group Name.
+        """Get the Mask View Names by Initiator Group Name.
 
         :param sid: Identification of VMAX (SID).
         :param ign: Initiator Group Name. check ign() or get_ign().
+
         :return: the return code and only Mask View Name.
         """
         self.validate_args()
@@ -149,11 +138,7 @@ class VMAX(object):
 
         if mvn_out[0] == 0:
             mvn_splitted = mvn_out[1].split(
-                    'Masking View Names'
-            )[1].split(
-                    '{'
-            )[1].split(
-                    '}')[0]
+                'Masking View Names')[1].split('{')[1].split('}')[0]
 
             mvn_array = [line for line in mvn_splitted.split('\n') if
                          line.strip() != '']
@@ -168,11 +153,11 @@ class VMAX(object):
             return mvn_out
 
     def sgn(self, sid='', mvn=''):
-        """
-         Get the Storage Group Name by the Mask View Name.
+        """Get the Storage Group Name by the Mask View Name.
 
          :param sid: Identification of VMAX (SID).
          :param mvn: Mask View Name check mvn() or get_mvn().
+
          :return: the return code and full output Storage Group Name.
          """
 
@@ -186,11 +171,11 @@ class VMAX(object):
         return sgn_out
 
     def get_sgn(self, sid='', mvn=''):
-        """
-         Get the Storage Group Name by the Mask View Name.
+        """Get the Storage Group Name by the Mask View Name.
 
          :param sid: Identification of VMAX (SID).
          :param mvn: Mask View Name check sgn() or get_sgn().
+
          :return: the return code and only Storage Group Name.
          """
         self.validate_args()
@@ -207,8 +192,7 @@ class VMAX(object):
 
     def create_dev(self, sid='', count=0, lun_size=0, member_size=0,
                    lun_type='', pool='', sgn='', action='prepare'):
-        """
-        Create device(s) for Storage Group Name.
+        """Create device(s) for Storage Group Name.
 
         :param sid: Identification of VMAX (SID)
         :param count: number of devices
