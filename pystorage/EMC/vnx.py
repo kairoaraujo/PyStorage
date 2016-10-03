@@ -158,12 +158,12 @@ class VNX(object):
                  [return code, error, output]
         """
 
-        list_luns_cmd = "{0} -h {1} storagepool -list -name {2}".format(
+        list_luns_cmd = "{0} -h {1} storagepool -list -name \'{2}\'".format(
             self.naviseccli_path,
             self.fst_address,
             pool_name)
 
-        list_luns_out = runsub.cmd(list_luns_cmd)
+        list_luns_out = runsub.cmd(list_luns_cmd, shell=True)
 
         luns_ids =[]
         if list_luns_out[0] == 0:
@@ -176,7 +176,7 @@ class VNX(object):
         luns_ids.sort(key=int)
 
         if len(luns_ids) == 0:
-            return 1, 'No LUNs founds in Storage Pool {0}'.format(pool_name)
+            return 1, 'No LUNs founds in Storage Pool \'{0}\''.format(pool_name)
 
         else:
             return 0, luns_ids
@@ -367,7 +367,8 @@ class VNX(object):
         """
 
         create_dev_cmd = "{0} -h {1} lun -create -type {6} -capacity {2} " \
-                         "-sq gb -poolName {3} -aa 1 -l {4} -name {5}".format(
+                         "-sq gb -poolName \'{3}\' -aa 1 -l \'{4}\' " \
+                         "-name \'{5}\'".format(
             self.naviseccli_path,
             address,
             lun_size,
@@ -377,7 +378,7 @@ class VNX(object):
             lun_type
         )
 
-        create_dev_cmd_out = runsub.cmd(create_dev_cmd)
+        create_dev_cmd_out = runsub.cmd(create_dev_cmd, shell=True)
         return create_dev_cmd_out
 
     def mapping_dev(self, stggroup='None', hlu='None', alu='None'):
@@ -395,7 +396,8 @@ class VNX(object):
         """
 
         mapping_dev_cmd = "{0} -h {1} -user {2} -password {3} -scope {4} " \
-                          "storagegroup -addhlu -gname {5} -hlu {6} -alu {7}" \
+                          "storagegroup -addhlu -gname \'{5}\' -hlu {6} " \
+                          "-alu {7}" \
             .format(
             self.naviseccli_path,
             self.fst_address,
@@ -406,5 +408,5 @@ class VNX(object):
             hlu,
             alu)
 
-        mapping_dev_cmd_out = runsub.cmd(mapping_dev_cmd)
+        mapping_dev_cmd_out = runsub.cmd(mapping_dev_cmd, shell=True)
         return mapping_dev_cmd_out
